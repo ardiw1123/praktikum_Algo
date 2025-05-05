@@ -24,10 +24,16 @@ void bacaData(){
         return;
     }
     jumlah_data = 0;
-    char nim[20], nama[100], jurusan[50], th_masuk[10];
+    char nim[20], nama[100], jurusan[50], th_masuk[10], buffer[100];
     float ipk;
-    while (fscanf(file, "%s\n%[^\n]\n%[^\n]\n%s\n%f\n", nim, nama, jurusan, th_masuk, &ipk) != EOF)
+    while (fgets(nim, sizeof(nim), file) && fgets(nama, sizeof(nama), file) && fgets(jurusan, sizeof(jurusan), file) && fgets(th_masuk, sizeof(th_masuk), file) && fgets(buffer, sizeof(buffer), file))
     {
+        sscanf(buffer, "%f", &ipk);
+
+        nim[strcspn(nim, "\n")] = '\0';
+        nama[strcspn(nama, "\n")] = '\0';
+        jurusan[strcspn(jurusan, "\n")] = '\0';
+        th_masuk[strcspn(th_masuk, "\n")] = '\0';
         data[jumlah_data] = new mahasiswa;
         data[jumlah_data]->nim = nim;
         data[jumlah_data]->nama = nama;
@@ -93,7 +99,6 @@ void inputData(){
             data[jumlah_data]->th_masuk.c_str(), 
             data[jumlah_data]->ipk);
         jumlah_data++;
-
     }
     fclose(file);
 }
@@ -139,24 +144,24 @@ void bubbleSort(){
 
 int partisi(int awal, int akhir){
     int pivot;
-    try {
+    // try {
         pivot = stoi(data[akhir]->nim);
-    } catch (...) {
-        cerr << "Error: NIM pada indeks " << akhir << " tidak valid." << endl;
-        return awal; // atau tangani error dengan cara lain
-    }
+    // } catch (...) {
+    //     cerr << "Error: NIM pada indeks " << akhir << " tidak valid." << endl;
+    //     return awal; // atau tangani error dengan cara lain
+    // }
     int i = awal;
     for (int j = i; j < akhir; j++)
     {
-        try {
+        // try {
             if (stoi(data[j]->nim) <= pivot) {
                 swap(data[j], data[i]);
                 i++;
             }
-        } catch (...) {
-            cerr << "Error: NIM pada indeks " << j << " tidak valid." << endl;
-            // Anda dapat memilih untuk melanjutkan atau menghentikan sorting
-        }
+        // } catch (...) {
+        //     cerr << "Error: NIM pada indeks " << j << " tidak valid." << endl;
+        //     // Anda dapat memilih untuk melanjutkan atau menghentikan sorting
+        // }
     }
     swap(data[akhir], data[i]);
     return i;
@@ -262,8 +267,11 @@ void hapusData(){
             }
             jumlah_data--;
             cout << "Mahasiswa dengan NIM " << hapusNim << " berhasil dihapus!" << endl;
+            inputDataFile();
             return;
         }
+        else
+        cout << "NIM yang anda masukkan tidak ada dalam data" << endl;
     }
 }
 void tampilData() {
