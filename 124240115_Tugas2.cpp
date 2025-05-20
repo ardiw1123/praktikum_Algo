@@ -8,7 +8,7 @@ struct antrian
     int total_harga;
     antrian *next;
 };
-antrian *depan, *belakang;
+antrian *depan, *belakang, *bottom, *top;
 
 struct history{
     string nama, jenis_roti;
@@ -104,6 +104,30 @@ void tampilkanHistory(){
         bantu = bantu->next;
     }
 }
+
+void batalkanPesanan(){
+    if (antrianKosong()) {
+        cout << "Belum ada antrian\n";
+    } else if (depan == belakang) { // hanya 1 node
+        string nama = depan->nama;
+        delete depan;
+        depan = belakang = nullptr;
+        cout << "Pesanan atas nama " << nama << " berhasil dibatalkan\n";
+    } else {
+        antrian *bantu = depan;
+        while (bantu->next != belakang) {
+            bantu = bantu->next;
+        }
+        antrian *hapus = belakang;
+        string nama = hapus->nama;
+        bantu->next = nullptr;
+        belakang = bantu;
+        delete hapus;
+        cout << "Pesanan atas nama " << nama << " berhasil dibatalkan\n";
+    }
+}
+
+
 int main(){
     buatAntrian();
     int menu, total_harga;
@@ -117,6 +141,7 @@ int main(){
         cout << "||2. Tampilkan Antrian     ||\n";
         cout << "||3. Layani Pesanan        ||\n";
         cout << "||4. Lihat History Pesanan ||" << endl;
+        cout << "||5. Batalkan Pesanan      ||" << endl;
         cout << "||0. exit                  ||\n";
         cout << "=============================\n";
         cout << "pilih menu: "; cin >> menu;
@@ -138,6 +163,9 @@ int main(){
             break;
         case 4:
             tampilkanHistory();
+            break;
+        case 5:
+            batalkanPesanan();
             break;
         case 0:
             cout << "Thank you!" << endl;
