@@ -4,11 +4,11 @@
 #include <algorithm>
 using namespace std;
 
-struct mahasiswa {
+struct Mahasiswa { // struct seharusnya menggunakan huruf besar
     string nama, nim;
     float ipk;
 };
-mahasiswa data[10]{
+Mahasiswa data[10]{
     {"Budi", "124240001", 3.5}, 
     {"Andi", "124240002", 3.6}, 
     {"Caca", "124240003", 3.7}, 
@@ -45,29 +45,44 @@ string toLowerCase(string str) {
     transform(str.begin(), str.end(), str.begin(), ::tolower);
     return str;
 }
-void cariNama(){
-int i,j,t; bool found; string x;
-  cout << "Masukkan nama mahasiswa: "; cin >> x;
-  string lowerInput = toLowerCase(x);
-  i=0;  j=10;  found=false;  
-  while ((!found) & (i <= j))
-  { t = (i + j) / 2;     
-    string lowerNama = toLowerCase(data[i].nama);
-    if (lowerInput == lowerNama)
-	found=true;       
-    else
-	if (x < data[i].nama)
-	   j = t - 1;    
-	else
-	   i = t + 1;    
-  }
-  if(found)
-    cout << "Nama: " << data[i].nama << "," << "  NIM: " << data[i].nim << "," << "  IPK: " << data[i].ipk << endl;
-  else
-     cout << x <<" tidak terdapat dalam data"<< endl;
+void cariNama() {
+    int i = 0, j = 10, t;
+    bool found = false;
+    string x;
+    cout << "Masukkan nama Mahasiswa: ";
+    cin >> x;
+    string lowerInput = toLowerCase(x);
+    // Sorting data berdasarkan nama sebelum pencarian
+     for (int i = 0; i < 10; i++) {
+        for (int j = 0; j < 10 - i; j++) {
+            if (toLowerCase(data[j].nama) > toLowerCase(data[j + 1].nama)) {
+                swap(data[j], data[j + 1]);
+            }
+        }
+    }
 
+    while (!found && i <= j) {
+        t = (i + j) / 2;
+        string lowerNama = toLowerCase(data[t].nama);
+        
+        if (lowerInput == lowerNama) {
+            found = true;
+        } else if (lowerInput < lowerNama) {
+            j = t - 1;
+        } else {
+            i = t + 1;
+        }
+    }
+
+    if (found)
+        cout << "Nama: " << data[t].nama
+             << ", NIM: " << data[t].nim
+             << ", IPK: " << data[t].ipk << endl;
+    else
+        cout << x << " tidak terdapat dalam data" << endl;
 }
-void sortAsc(mahasiswa data[], int awal, int akhir){
+
+void sortAsc(Mahasiswa data[], int awal, int akhir){
     int low = awal, high = akhir;
     float pivot = data[(awal + akhir) / 2].ipk;
     int temp;
@@ -88,14 +103,14 @@ void sortAsc(mahasiswa data[], int awal, int akhir){
     if (low < akhir)
         sortAsc(data, low, akhir);
 }
-void tampilAsc(mahasiswa data[]){
+void tampilAsc(Mahasiswa data[]){
     cout << "Data Mahasiswa: " << endl;
     for (int i = 0; i<10; i++) {
     cout << "Nama: " << data[i].nama << "," << "  NIM: " << data[i].nim << "," << "  IPK: " << data[i].ipk << endl;
     }
     cout << "Mahasiswa telah diurutkan Ascending berdasarkan IPK" << endl;
 }
-void sortDesc(mahasiswa data[], int n){
+void sortDesc(Mahasiswa data[], int n){
     n = 10;
     for( int i=0; i<n-1; i++){
         for(int j=i+1; j<n; j++){
